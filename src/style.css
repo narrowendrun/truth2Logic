@@ -1,0 +1,56 @@
+
+.form-floating{
+    position: absolute;
+    width: 20vw;
+    height: 40vh;
+    left: 25vw;
+    top: 5vh;
+    border: 1px solid black;
+}
+#floatingTextarea{
+    height: 100%;
+    text-align: center;
+    font-size: 1.5em;
+}
+.consideredOutput{
+    background-color: greenyellow;
+}
+.logicOutput{
+    position: absolute;
+    border: 1px solid black;
+    width: 20vw;
+    height: 40vh;
+    top: 5vh;
+    left: 55vw;
+    text-align: center;
+    font-size: 1.5em;
+}
+.simplify{
+    position: absolute;
+    width: 50vw;
+    left: 25vw;
+    text-align: center;
+    font-size: 2em;
+    top: 50vh;
+    border: 1px solid black;
+}
+tr, td{
+    border: 1px solid black;
+    width: 5vw;
+    text-align: center;
+}
+#columnLabels{
+    position: absolute;
+    top: 65vh;
+    left: 20vw;
+}
+#rowLabels{
+    position: absolute;
+    top: 70vh;
+    left: 10vw;
+}
+#theGrid{
+    position: absolute;
+    top: 70vh;
+    left: 20vw;
+}
