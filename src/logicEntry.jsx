@@ -14,7 +14,7 @@ export default function LogicExpression() {
       <div className="form-floating">
         <textarea
           className="form-control"
-          placeholder="Leave a comment here"
+          placeholder="00:1&#10;01:0&#10;10:0&#10;11:1"
           id="floatingTextarea"
           value={logicXp}
           onChange={handleLogicEntry}

@@ -35,23 +35,10 @@ export default function LogicOutput({ expression }) {
   for (let i = 0; i < indexArray.length; i++) {
     kMapArray.push(parseInt(output[indexArray[i]]));
   }
-  console.log(kMapArray);
+  
   return (
     <>
-      <div className="container logicOutput">
-        {input.map((item, index) => (
-          <div
-            className={
-              parseInt(output[index])
-                ? "row consideredOutput"
-                : "row ignoredOutput"
-            }
-            key={index}
-          >
-            <div className="col">{item}</div>
-          </div>
-        ))}
-      </div>
+      
       <div className="container simplify">{simplify}</div>
       <Kmap variables={variables} KmapArray={kMapArray} />
     </>

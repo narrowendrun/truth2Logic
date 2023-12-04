@@ -11,23 +11,55 @@ export default function Kmap({ variables, KmapArray }) {
 
   let rowStyle = {
     position: "absolute",
-    top: "70vh",
+    top: "65vh",
     left: `${leftStyling}vw`,
   };
   let columnStyle = {
     position: "absolute",
-    top: "65vh",
+    top: "60vh",
     left: `${leftStyling + tdWidth + delta}vw`,
   };
   let gridStyle = {
     position: "absolute",
-    top: "70vh",
+    top: "65vh",
     left: `${leftStyling + tdWidth + delta}vw`,
   };
   let KmapGrid = [];
-  for (i = 0; i < rows; i++) {
-    for (j = 0; j < columns; j++) {}
+  let flipper = 0 //if flipper is 1, the placeHolder will be reversed
+  for (let i = 0; i < KmapArray.length; i+=columns) {
+    let placeHolder = KmapArray.slice(i,i+columns)
+    if(flipper==1){
+      placeHolder=placeHolder.reverse()
+    }
+    if(placeHolder=='NaN'){
+      placeHolder='-'
+    }
+    KmapGrid.push(placeHolder)
+    flipper=+!flipper
   }
+  let xps = []
+
+function bfs(grid, i, j){
+  if(i<0||i>grid.length||j<0||j<grid[i].length||grid[i][j]!=1) return
+  grid[i][j]=2
+  bfs(grid,i+1,j)
+  bfs(grid,i-1,j)
+  bfs(grid,i,j+1)
+  bfs(grid,i,j-1)
+}
+for(let i=0; i<KmapGrid.length; i++){
+  let indices=[]
+  for(let j=0; j<KmapGrid[i].length; j++){
+    if(KmapGrid[i][j]==1){
+      indices.push([i,j])
+      bfs(KmapGrid,i,j)
+    }
+ 
+  }
+  xps.push(indices)
+}
+console.log(KmapGrid)
+console.log(xps) 
   function printHeadingColumns(n) {
     let data = grayColum;
     let html = [];
@@ -48,17 +80,22 @@ export default function Kmap({ variables, KmapArray }) {
     }
     return html;
   }
-  function printGridColumns(n) {
+  function printGridColumns(n,data) {
     let html = [];
     for (let i = 0; i < n; i++) {
-      html.push(<td key={"col" + i}>0</td>);
+      if(data[i]==1){
+        html.push(<td key={"col" + i} style={{backgroundColor:"greenyellow"}}>{data[i]}</td>);
+      }else{
+        html.push(<td key={"col" + i}>{data[i]}</td>);
+      }
+     
     }
     return html;
   }
   function printGrid(m, n) {
     let html = [];
     for (let i = 0; i < m; i++) {
-      html.push(<tr key={"row" + i}>{printGridColumns(n)}</tr>);
+      html.push(<tr key={"row" + i}>{printGridColumns(n,KmapGrid[i])}</tr>);
     }
     return html;
   }
