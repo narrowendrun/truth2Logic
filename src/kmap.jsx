@@ -24,7 +24,10 @@ export default function Kmap({ variables, KmapArray }) {
     top: "70vh",
     left: `${leftStyling + tdWidth + delta}vw`,
   };
-
+  let KmapGrid = [];
+  for (i = 0; i < rows; i++) {
+    for (j = 0; j < columns; j++) {}
+  }
   function printHeadingColumns(n) {
     let data = grayColum;
     let html = [];
