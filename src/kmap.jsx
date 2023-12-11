@@ -1,4 +1,4 @@
-import getHeadings from "./codes";
+import { getHeadings, generateKmapGrid, kMapAlgo } from "./codes";
 export default function Kmap({ variables, KmapArray }) {
   const rows = 2 ** parseInt(variables / 2);
   const columns = 2 ** (variables - parseInt(variables / 2));
@@ -24,42 +24,22 @@ export default function Kmap({ variables, KmapArray }) {
     top: "65vh",
     left: `${leftStyling + tdWidth + delta}vw`,
   };
-  let KmapGrid = [];
-  let flipper = 0 //if flipper is 1, the placeHolder will be reversed
-  for (let i = 0; i < KmapArray.length; i+=columns) {
-    let placeHolder = KmapArray.slice(i,i+columns)
-    if(flipper==1){
-      placeHolder=placeHolder.reverse()
-    }
-    if(placeHolder=='NaN'){
-      placeHolder='-'
-    }
-    KmapGrid.push(placeHolder)
-    flipper=+!flipper
-  }
-  let xps = []
 
-function bfs(grid, i, j){
-  if(i<0||i>grid.length||j<0||j<grid[i].length||grid[i][j]!=1) return
-  grid[i][j]=2
-  bfs(grid,i+1,j)
-  bfs(grid,i-1,j)
-  bfs(grid,i,j+1)
-  bfs(grid,i,j-1)
-}
-for(let i=0; i<KmapGrid.length; i++){
-  let indices=[]
-  for(let j=0; j<KmapGrid[i].length; j++){
-    if(KmapGrid[i][j]==1){
-      indices.push([i,j])
-      bfs(KmapGrid,i,j)
+  ////////////////////////////////////////////////////////////
+  let KmapGrid = generateKmapGrid(KmapArray, columns);
+  function execute() {
+    let indices = kMapAlgo(generateKmapGrid(KmapArray, columns));
+    let output = "";
+    for (let i = 0; i < indices.length; i++) {
+      output += `\n group ${i + 1} at `;
+      for (let j = 0; j < indices[i].length; j++) {
+        output += `(${indices[i][j]}) `;
+      }
     }
- 
+    document.getElementById("groupOutput").textContent = indices.length;
+    document.getElementById("arrayOutput").textContent = output;
   }
-  xps.push(indices)
-}
-console.log(KmapGrid)
-console.log(xps) 
+  ////////////////////////////////////////////////////////////
   function printHeadingColumns(n) {
     let data = grayColum;
     let html = [];
@@ -80,22 +60,25 @@ console.log(xps)
     }
     return html;
   }
-  function printGridColumns(n,data) {
+  function printGridColumns(n, data) {
     let html = [];
     for (let i = 0; i < n; i++) {
-      if(data[i]==1){
-        html.push(<td key={"col" + i} style={{backgroundColor:"greenyellow"}}>{data[i]}</td>);
-      }else{
+      if (data[i] == 1) {
+        html.push(
+          <td key={"col" + i} style={{ backgroundColor: "greenyellow" }}>
+            {data[i]}
+          </td>
+        );
+      } else {
         html.push(<td key={"col" + i}>{data[i]}</td>);
       }
-     
     }
     return html;
   }
   function printGrid(m, n) {
     let html = [];
     for (let i = 0; i < m; i++) {
-      html.push(<tr key={"row" + i}>{printGridColumns(n,KmapGrid[i])}</tr>);
+      html.push(<tr key={"row" + i}>{printGridColumns(n, KmapGrid[i])}</tr>);
     }
     return html;
   }
@@ -110,6 +93,14 @@ console.log(xps)
       <table id="theGrid" style={gridStyle}>
         <tbody>{printGrid(rows, columns)}</tbody>
       </table>
+      <br />
+      <div className="container output">
+        <p>
+          number of 1-groups : <span id="groupOutput">0</span>
+          <span id="arrayOutput"></span>
+        </p>
+      </div>
+      <button onClick={() => execute()}>click</button>
     </>
   );
 }

@@ -1,5 +1,5 @@
 import Kmap from "./kmap";
-import getHeadings from "./codes";
+import { getHeadings } from "./codes";
 export default function LogicOutput({ expression }) {
   function generateVariables(n) {
     const alphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -35,10 +35,9 @@ export default function LogicOutput({ expression }) {
   for (let i = 0; i < indexArray.length; i++) {
     kMapArray.push(parseInt(output[indexArray[i]]));
   }
-  
+
   return (
     <>
-      
       <div className="container simplify">{simplify}</div>
       <Kmap variables={variables} KmapArray={kMapArray} />
     </>
