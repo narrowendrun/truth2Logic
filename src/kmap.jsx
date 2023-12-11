@@ -8,11 +8,12 @@ export default function Kmap({ variables, KmapArray }) {
   let delta = 1;
   let leftStyling = (100 - (parseInt(columns) * tdWidth + delta + tdWidth)) / 2;
   leftStyling = leftStyling > 0 ? leftStyling : 0;
-
+  let groupStyle={top:`${(rows*5)+72.5}vh`}
+ 
   let rowStyle = {
     position: "absolute",
-    top: "65vh",
-    left: `${leftStyling}vw`,
+    top: "67.5vh",
+    left: `${leftStyling+delta}vw`,
   };
   let columnStyle = {
     position: "absolute",
@@ -21,14 +22,13 @@ export default function Kmap({ variables, KmapArray }) {
   };
   let gridStyle = {
     position: "absolute",
-    top: "65vh",
+    top: "67.5vh",
     left: `${leftStyling + tdWidth + delta}vw`,
   };
 
   ////////////////////////////////////////////////////////////
   let KmapGrid = generateKmapGrid(KmapArray, columns);
-  function execute() {
-    let indices = kMapAlgo(generateKmapGrid(KmapArray, columns));
+  let indices = kMapAlgo(generateKmapGrid(KmapArray, columns));
     let output = "";
     for (let i = 0; i < indices.length; i++) {
       output += `\n group ${i + 1} at `;
@@ -36,9 +36,6 @@ export default function Kmap({ variables, KmapArray }) {
         output += `(${indices[i][j]}) `;
       }
     }
-    document.getElementById("groupOutput").textContent = indices.length;
-    document.getElementById("arrayOutput").textContent = output;
-  }
   ////////////////////////////////////////////////////////////
   function printHeadingColumns(n) {
     let data = grayColum;
@@ -80,6 +77,7 @@ export default function Kmap({ variables, KmapArray }) {
     for (let i = 0; i < m; i++) {
       html.push(<tr key={"row" + i}>{printGridColumns(n, KmapGrid[i])}</tr>);
     }
+    
     return html;
   }
   return (
@@ -94,13 +92,13 @@ export default function Kmap({ variables, KmapArray }) {
         <tbody>{printGrid(rows, columns)}</tbody>
       </table>
       <br />
-      <div className="container output">
+      <div className="container output" style={groupStyle}>
         <p>
-          number of 1-groups : <span id="groupOutput">0</span>
-          <span id="arrayOutput"></span>
+          number of 1-groups : <span id="groupOutput">{indices.length}</span>
+          <span id="arrayOutput">{output}</span>
         </p>
       </div>
-      <button onClick={() => execute()}>click</button>
+     
     </>
   );
 }

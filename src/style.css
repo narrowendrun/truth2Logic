@@ -25,15 +25,15 @@
 }
 tr, td{
     border: 5px solid black;
-    width: 5vw;
+    width: 5vh;
+    height: 5vh;
     text-align: center;
     font-weight: 900;
 }
 .output{
     position: absolute;
-    width: 25vw;
-    left: 5vw;
-    top: 5vh;
+    width: 50vw;
+    left: 25vw;
     text-align: center;
     font-size: 1.5em;
     border: 1px solid black;

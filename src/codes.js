@@ -52,8 +52,8 @@ export function getHeadings(n) {
 }
 
 ///////////////////////////////////////////
-let indexArray_helper = [];
 let indexArray = [];
+let indexSet = new Set();
 function bfs(grid, i, j) {
   if (i < 0) {
     i = grid.length - 1;
@@ -62,9 +62,9 @@ function bfs(grid, i, j) {
     j = grid[i].length - 1;
   }
   if (i > grid.length - 1 || j > grid[i].length - 1) return;
-  if (grid[i][j] == 0 || grid[i][j] == 2) return;
+  if (grid[i][j] !=1) return;
   grid[i][j] = 2;
-  indexArray_helper.push([i, j]);
+  indexSet.add([i, j]);
   bfs(grid, i + 1, j);
   bfs(grid, i - 1, j);
   bfs(grid, i, j + 1);
@@ -73,17 +73,13 @@ function bfs(grid, i, j) {
 
 export function kMapAlgo(grid) {
   indexArray = [];
+  indexSet.clear(); // Clear set before processing grid
   for (let i = 0; i < grid.length; i++) {
     for (let j = 0; j < grid[i].length; j++) {
-      if (grid[i][j] == 1) {
-        if (
-          indexArray_helper.length &&
-          !indexArray.includes(indexArray_helper)
-        ) {
-          indexArray.push(indexArray_helper);
-        }
-        indexArray_helper = [];
+      if (grid[i][j] == 1 && !indexSet.has([i, j])) {
         bfs(grid, i, j);
+        indexArray.push([...indexSet]); // Deep copy to avoid mutation
+        indexSet.clear(); // Clear set after processing island
       }
     }
   }
