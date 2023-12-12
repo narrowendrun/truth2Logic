@@ -14,6 +14,7 @@ export default function Kmap({ variables, KmapArray }) {
   let leftStyling = (100 - (parseInt(columns) * tdWidth + delta + tdWidth)) / 2;
   leftStyling = leftStyling > 0 ? leftStyling : 0;
   let groupStyle = { top: `${rows * 5 + 77.5}vh` };
+  let groupStyle2 = { top: `${rows * 5 + 92.5}vh` };
 
   let rowStyle = {
     position: "absolute",
@@ -105,6 +106,17 @@ export default function Kmap({ variables, KmapArray }) {
           <br />
           <span id="arrayOutput2"></span>
         </p>
+      </div>
+      <div className="container output" style={groupStyle2}>
+      {Object.keys(verticallyAdjPoints).map((key) => (
+            <span key={key}>
+              column 
+              {key}:{" "}
+              {verticallyAdjPoints[key].map((item) => (
+                <span key={`${key}-${item.join(",")}`}>{item.join(", ")}<br/></span>
+              ))}
+            </span>
+          ))}
       </div>
     </>
   );
