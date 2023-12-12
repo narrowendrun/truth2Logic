@@ -61,8 +61,13 @@ function bfs(grid, i, j) {
   if (j < 0) {
     j = grid[i].length - 1;
   }
-  if (i > grid.length - 1 || j > grid[i].length - 1) return;
-  if (grid[i][j] !=1) return;
+  if (i > grid.length - 1) {
+    i = 0;
+  }
+  if (j > grid[i].length - 1) {
+    j = 0;
+  }
+  if (grid[i][j] != 1) return;
   grid[i][j] = 2;
   indexSet.add([i, j]);
   bfs(grid, i + 1, j);
@@ -83,7 +88,75 @@ export function kMapAlgo(grid) {
       }
     }
   }
-  return indexArray;
+  return Array.from(indexArray);
 }
 
 ///////////////////////////////////////////
+
+function isOfValidLength(n) {
+  return n > 0 && (n & (n - 1)) === 0;
+}
+function makeAdjacentGroup(group) {
+  let interim = [group[0]];
+  let output = [];
+  for (let i = 1; i < group.length + 1; i++) {
+    if (group[i] - group[i - 1] == 1) {
+      interim.push(group[i]);
+    } else {
+      output.push(interim);
+      interim = [group[i]];
+    }
+  }
+  return output;
+}
+function extractAdjacent(group) {
+  let adjacentGroups = {};
+  for (const coord in group) {
+    let corresponding_coord = group[coord];
+    corresponding_coord.sort();
+    if (
+      corresponding_coord.length - 1 ==
+      corresponding_coord[corresponding_coord.length - 1] -
+        corresponding_coord[0]
+    ) {
+      adjacentGroups[coord] = [];
+      adjacentGroups[coord].push(corresponding_coord);
+    } else {
+      let splitGroups = makeAdjacentGroup(corresponding_coord);
+      if (splitGroups) {
+        adjacentGroups[coord] = splitGroups;
+      }
+    }
+  }
+  return adjacentGroups;
+}
+function groupByCoordinates(Allcoords, uniqueCoords, choice) {
+  const groupedCoords = {};
+  for (const coord of uniqueCoords) {
+    groupedCoords[coord] = [];
+  }
+  for (const [xCoord, yCoord] of Allcoords) {
+    if (choice == "y") {
+      groupedCoords[yCoord].push(xCoord);
+    }
+    if (choice == "x") {
+      groupedCoords[xCoord].push(yCoord);
+    }
+  }
+  return groupedCoords;
+}
+
+export function mappablePoints(group, choice) {
+  let coordinatesSet = new Set(); //set of cordinates of choice
+  let output = {};
+  for (let i = 0; i < group.length; i++) {
+    coordinatesSet.clear();
+    for (let j = 0; j < group[i].length; j++) {
+      coordinatesSet.add(group[i][j][1]);
+    }
+    let groupedCoords = groupByCoordinates(group[i], coordinatesSet, choice);
+    output = { ...output, ...extractAdjacent(groupedCoords) };
+    coordinatesSet.clear();
+  }
+  return output;
+}

@@ -1,4 +1,9 @@
-import { getHeadings, generateKmapGrid, kMapAlgo } from "./codes";
+import {
+  getHeadings,
+  generateKmapGrid,
+  kMapAlgo,
+  mappablePoints,
+} from "./codes";
 export default function Kmap({ variables, KmapArray }) {
   const rows = 2 ** parseInt(variables / 2);
   const columns = 2 ** (variables - parseInt(variables / 2));
@@ -8,35 +13,37 @@ export default function Kmap({ variables, KmapArray }) {
   let delta = 1;
   let leftStyling = (100 - (parseInt(columns) * tdWidth + delta + tdWidth)) / 2;
   leftStyling = leftStyling > 0 ? leftStyling : 0;
-  let groupStyle={top:`${(rows*5)+72.5}vh`}
- 
+  let groupStyle = { top: `${rows * 5 + 77.5}vh` };
+
   let rowStyle = {
     position: "absolute",
-    top: "67.5vh",
-    left: `${leftStyling+delta}vw`,
+    top: "72.5vh",
+    left: `${leftStyling + delta}vw`,
   };
   let columnStyle = {
     position: "absolute",
-    top: "60vh",
+    top: "65vh",
     left: `${leftStyling + tdWidth + delta}vw`,
   };
   let gridStyle = {
     position: "absolute",
-    top: "67.5vh",
+    top: "72.5vh",
     left: `${leftStyling + tdWidth + delta}vw`,
   };
 
   ////////////////////////////////////////////////////////////
   let KmapGrid = generateKmapGrid(KmapArray, columns);
   let indices = kMapAlgo(generateKmapGrid(KmapArray, columns));
-    let output = "";
-    for (let i = 0; i < indices.length; i++) {
-      output += `\n group ${i + 1} at `;
-      for (let j = 0; j < indices[i].length; j++) {
-        output += `(${indices[i][j]}) `;
-      }
+  let output = "";
+  for (let i = 0; i < indices.length; i++) {
+    output += `\n group ${i + 1} at `;
+    for (let j = 0; j < indices[i].length; j++) {
+      output += `(${indices[i][j]}) `;
     }
-  ////////////////////////////////////////////////////////////
+  }
+  let verticallyAdjPoints = mappablePoints(indices, "y");
+  console.log("vertical points : ");
+  console.log(verticallyAdjPoints);
   function printHeadingColumns(n) {
     let data = grayColum;
     let html = [];
@@ -77,7 +84,7 @@ export default function Kmap({ variables, KmapArray }) {
     for (let i = 0; i < m; i++) {
       html.push(<tr key={"row" + i}>{printGridColumns(n, KmapGrid[i])}</tr>);
     }
-    
+
     return html;
   }
   return (
@@ -94,11 +101,11 @@ export default function Kmap({ variables, KmapArray }) {
       <br />
       <div className="container output" style={groupStyle}>
         <p>
-          number of 1-groups : <span id="groupOutput">{indices.length}</span>
           <span id="arrayOutput">{output}</span>
+          <br />
+          <span id="arrayOutput2"></span>
         </p>
       </div>
-     
     </>
   );
 }
