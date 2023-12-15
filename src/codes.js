@@ -52,7 +52,7 @@ export function generateKmapGrid(KmapArray, columns) {
 }
 
 ///////////////////////////////////////////
-function init(expression,variables) {
+function init(expression, variables) {
   const output = expression.split("\n").map((i) => i.split(":")[1]);
   const simplify = output;
   let grayCode = getHeadings(2 ** parseInt(variables));
@@ -64,7 +64,7 @@ function init(expression,variables) {
   for (let i = 0; i < indexArray.length; i++) {
     kMapArray.push(parseInt(output[indexArray[i]]));
   }
-  return kMapArray
+  return kMapArray;
 }
 
 ///////////////////////////////////////////
@@ -99,7 +99,7 @@ export function kMapAlgo(grid) {
     for (let j = 0; j < grid[i].length; j++) {
       if (grid[i][j] == 1 && !indexSet.has([i, j])) {
         bfs(grid, i, j);
-        console.log(indexSet)
+        console.log(indexSet);
         indexArray.push([...indexSet]); // Deep copy to avoid mutation
         indexSet.clear(); // Clear set after processing island
       }
@@ -107,14 +107,19 @@ export function kMapAlgo(grid) {
   }
   return Array.from(indexArray);
 }
+///////////////////////////////////////////
+
+export function changeCellValue(m, i, KmapGrid) {
+  let bit = KmapGrid[m][i];
+  KmapGrid[m][i] = !+bit;
+}
 
 ///////////////////////////////////////////
 
 function isOfValidLength(n) {
   return n > 0 && (n & (n - 1)) === 0;
 }
-function makeAdjacentGroup(group) {
-  let boundary = 8 - 1;
+function makeAdjacentGroup(group, boundary) {
   let interim = [group[0]];
   let output = [];
   for (let i = 1; i < group.length + 1; i++) {
@@ -158,7 +163,7 @@ function makeAdjacentGroup(group) {
   output.sort();
   return output;
 }
-function extractAdjacent(group) {
+function extractAdjacent(group, boundary) {
   let adjacentGroups = {};
   for (const coord in group) {
     let corresponding_coord = group[coord];
@@ -171,7 +176,7 @@ function extractAdjacent(group) {
       adjacentGroups[coord] = [];
       adjacentGroups[coord].push(corresponding_coord);
     } else {
-      let splitGroups = makeAdjacentGroup(corresponding_coord);
+      let splitGroups = makeAdjacentGroup(corresponding_coord, boundary);
       if (splitGroups) {
         adjacentGroups[coord] = splitGroups;
       }
@@ -195,61 +200,62 @@ function groupByCoordinates(Allcoords, uniqueCoords, choice) {
   return groupedCoords;
 }
 
-export function mappablePoints(group, choice) {
+export function mappablePoints(group, choice, boundary) {
   let coordinatesSet = new Set(); //set of cordinates of choice
   let output = {};
-  console.log(`........................................................`);
+  //console.log(`........................................................`);
   for (let i = 0; i < group.length; i++) {
     coordinatesSet.clear();
     for (let j = 0; j < group[i].length; j++) {
       coordinatesSet.add(group[i][j][1]);
     }
 
-    console.log(`for group ${i + 1}: `);
-    console.log(group[i]);
-    console.log(`unique ${choice}-coordinate set is : `);
-    console.log(coordinatesSet);
-    console.log();
+    // console.log(`for group ${i + 1}: `);
+    // console.log(group[i]);
+    // console.log(`unique ${choice}-coordinate set is : `);
+    // console.log(coordinatesSet);
+    // console.log();
 
     let groupedCoords = groupByCoordinates(group[i], coordinatesSet, choice);
     // console.log(`groupedCoords : `)
     // console.log(groupedCoords)
-    let extractedCoords = extractAdjacent(groupedCoords);
-    // console.log(`adjacency computed :`)
-    // console.log(extractedCoords)
+    let extractedCoords = extractAdjacent(groupedCoords, boundary);
+    // console.log(`adjacency computed :`);
+    // console.log(extractedCoords);
+    // for (const key in Object.keys(extractedCoords)) {
+    //   if (Object.keys(output).includes(key)) {
+    //     console.log(`key clash at ${key}`);
+    //     console.log("output value");
+    //     console.log(output[key]);
+    //     console.log("extractedcoord value");
+    //     console.log(extractedCoords[key]);
+    //   }
+    // }
     output = { ...output, ...extractedCoords };
     coordinatesSet.clear();
   }
-  console.log(`........................................................`);
+  //console.log(`........................................................`);
   return output;
 }
 
-const Allcoords = [
+let indices = [
   [
-    [0, 0],
-    [1, 0],
-    [2, 0],
-    [3, 0],
-    [4, 0],
-    [5, 0],
-    [6, 0],
-    [7, 0],
-    [7, 7],
-    [0, 7],
-    [6, 1],
-    [5, 1],
-    [5, 2],
-    [6, 2],
-    [7, 2],
     [0, 2],
     [1, 2],
     [2, 2],
     [3, 2],
     [4, 2],
+    [5, 2],
+    [6, 2],
+    [7, 2],
+    [6, 1],
+    [5, 1],
+    [5, 0],
+    [6, 0],
     [2, 1],
     [1, 1],
-    [4, 7],
-    [3, 7],
+    [1, 0],
+    [2, 0],
   ],
   [
     [0, 4],
@@ -261,152 +267,12 @@ const Allcoords = [
     [6, 4],
     [7, 4],
   ],
+  [
+    [0, 7],
+    [7, 7],
+  ],
+  [
+    [3, 7],
+    [4, 7],
+  ],
 ];
-
-// let input=`000000:1
-//   000001:0
-//   000010:0
-//   000011:1
-//   000100:1
-//   000101:0
-//   000110:1
-//   000111:0
-//   001000:1
-//   001001:1
-//   001010:0
-//   001011:1
-//   001100:0
-//   001101:0
-//   001110:1
-//   001111:0
-//   010000:1
-//   010001:0
-//   010010:0
-//   010011:1
-//   010100:1
-//   010101:0
-//   010110:1
-//   010111:0
-//   011000:1
-//   011001:1
-//   011010:0
-//   011011:1
-//   011100:0
-//   011101:0
-//   011110:1
-//   011111:0
-//   100000:1
-//   100001:0
-//   100010:0
-//   100011:1
-//   100100:1
-//   100101:0
-//   100110:1
-//   100111:0
-//   101000:1
-//   101001:1
-//   101010:0
-//   101011:1
-//   101100:0
-//   101101:0
-//   101110:1
-//   101111:0
-//   110000:1
-//   110001:0
-//   110010:0
-//   110011:1
-//   110100:1
-//   110101:0
-//   110110:1
-//   110111:0
-//   111000:1
-//   111001:1
-//   111010:0
-//   111011:1
-//   111100:0
-//   111101:0
-//   111110:1
-//   111111:0`
-
-let a = ''
-
-let input = `000000:0
-000001:0
-000010:0
-000011:1
-000100:1
-000101:0
-000110:1
-000111:0
-001000:1
-001001:1
-001010:0
-001011:1
-001100:0
-001101:0
-001110:1
-001111:0
-010000:0
-010001:0
-010010:0
-010011:1
-010100:1
-010101:0
-010110:1
-010111:0
-011000:1
-011001:1
-011010:0
-011011:1
-011100:0
-011101:0
-011110:1
-011111:0
-100000:0
-100001:0
-100010:0
-100011:1
-100100:1
-100101:0
-100110:1
-100111:0
-101000:1
-101001:1
-101010:0
-101011:1
-101100:0
-101101:0
-101110:1
-101111:0
-110000:0
-110001:0
-110010:0
-110011:1
-110100:1
-110101:0
-110110:1
-110111:0
-111000:1
-111001:1
-111010:0
-111011:1
-111100:0
-111101:0
-111110:1
-111111:0`
-
-
-let columns=8
-let variables=8
-
-let indices=kMapAlgo(generateKmapGrid(init(input,variables),columns))
-console.log(indices)
-let vPoints = mappablePoints(indices, "y");
-//let hPoints = mappablePoints(Allcoords,"x")
-console.log("////////////////////////////////////////////////////////");
-console.log("vertical points : ");
-console.log(vPoints);
-console.log("////////////////////////////////////////////////////////");
-// console.log("horizontal points : ")
-// console.log(hPoints)
-// console.log("////////////////////////////////////////////////////////")

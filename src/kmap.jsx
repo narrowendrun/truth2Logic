@@ -1,8 +1,11 @@
+import { useEffect } from "react";
+import { useState } from "react";
 import {
   getHeadings,
   generateKmapGrid,
   kMapAlgo,
   mappablePoints,
+  changeCellValue,
 } from "./codes";
 export default function Kmap({ variables, KmapArray }) {
   const rows = 2 ** parseInt(variables / 2);
@@ -34,6 +37,7 @@ export default function Kmap({ variables, KmapArray }) {
 
   ////////////////////////////////////////////////////////////
   let KmapGrid = generateKmapGrid(KmapArray, columns);
+  const [refreshGrid, setRefreshGrid] = useState(0);
   let indices = kMapAlgo(generateKmapGrid(KmapArray, columns));
   let output = "";
   for (let i = 0; i < indices.length; i++) {
@@ -42,7 +46,9 @@ export default function Kmap({ variables, KmapArray }) {
       output += `(${indices[i][j]}) `;
     }
   }
-  let verticallyAdjPoints = mappablePoints(indices, "y");
+  console.log("indices: ");
+  console.log(indices);
+  let verticallyAdjPoints = mappablePoints(indices, "y", columns - 1);
   console.log("vertical points : ");
   console.log(verticallyAdjPoints);
   function printHeadingColumns(n) {
@@ -65,29 +71,38 @@ export default function Kmap({ variables, KmapArray }) {
     }
     return html;
   }
-  function printGridColumns(n, data) {
+  function printGridColumns(n, m, data) {
     let html = [];
     for (let i = 0; i < n; i++) {
-      if (data[i] == 1) {
-        html.push(
-          <td key={"col" + i} style={{ backgroundColor: "greenyellow" }}>
-            {data[i]}
-          </td>
-        );
-      } else {
-        html.push(<td key={"col" + i}>{data[i]}</td>);
-      }
+      html.push(
+        <td
+          key={"col" + i}
+          style={{ backgroundColor: data[i] == 1 ? "greenyellow" : "white" }}
+          // onClick={() => {
+          //   const newData = [...data]; // Copy the data
+          //   newData[i] = newData[i] === 0 ? 1 : 0; // Flip the bit
+          //   // Update KmapGrid with the new data
+          //   KmapGrid[m][i] = newData[i];
+          //   setRefreshGrid((prev) => (prev === 0 ? 1 : 0));
+          // }}
+        >
+          {data[i]}
+        </td>
+      );
     }
     return html;
   }
   function printGrid(m, n) {
     let html = [];
     for (let i = 0; i < m; i++) {
-      html.push(<tr key={"row" + i}>{printGridColumns(n, KmapGrid[i])}</tr>);
+      html.push(<tr key={"row" + i}>{printGridColumns(n, i, KmapGrid[i])}</tr>);
     }
-
     return html;
   }
+  // useEffect(() => {
+  //   console.log("changed kMapGrid");
+  //   document.getElementById("theGrid").innerHTML = printGrid(rows, columns);
+  // }, [refreshGrid]);
   return (
     <>
       <table id="columnLabels" style={columnStyle}>
@@ -108,15 +123,18 @@ export default function Kmap({ variables, KmapArray }) {
         </p>
       </div>
       <div className="container output" style={groupStyle2}>
-      {Object.keys(verticallyAdjPoints).map((key) => (
-            <span key={key}>
-              column 
-              {key}:{" "}
-              {verticallyAdjPoints[key].map((item) => (
-                <span key={`${key}-${item.join(",")}`}>{item.join(", ")}<br/></span>
-              ))}
-            </span>
-          ))}
+        {/* {Object.keys(verticallyAdjPoints).map((key) => (
+          <span key={key}>
+            column
+            {key}:{" "}
+            {verticallyAdjPoints[key].map((item) => (
+              <span key={`${key}-${item.join(",")}`}>
+                {item.join(", ")}
+                <br />
+              </span>
+            ))}
+          </span>
+        ))} */}
       </div>
     </>
   );
