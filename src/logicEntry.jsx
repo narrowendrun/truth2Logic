@@ -8,9 +8,6 @@ export default function LogicExpression() {
   };
   return (
     <>
-      <br />
-      <br />
-      <br />
       <div className="form-floating">
         <textarea
           className="form-control"
@@ -20,7 +17,7 @@ export default function LogicExpression() {
           onChange={handleLogicEntry}
         ></textarea>
       </div>
-      <br />
+
       <LogicOutput expression={logicXp} />
     </>
   );

@@ -40,9 +40,6 @@ export default function LogicOutput({ expression }) {
     <>
       <div className="container simplify">{simplify}</div>
       <Kmap variables={variables} KmapArray={kMapArray} />
-      <br />
-      <br />
-      <br />
     </>
   );
 }

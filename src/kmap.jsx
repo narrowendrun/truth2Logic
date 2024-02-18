@@ -4,8 +4,8 @@ import {
   getHeadings,
   generateKmapGrid,
   kMapAlgo,
-  mappablePoints,
-  changeCellValue,
+  // mappablePoints,
+  // changeCellValue,
 } from "./codes";
 export default function Kmap({ variables, KmapArray }) {
   const rows = 2 ** parseInt(variables / 2);
@@ -38,7 +38,9 @@ export default function Kmap({ variables, KmapArray }) {
   ////////////////////////////////////////////////////////////
   let KmapGrid = generateKmapGrid(KmapArray, columns);
   const [refreshGrid, setRefreshGrid] = useState(0);
-  let indices = kMapAlgo(generateKmapGrid(KmapArray, columns));
+  let indices = kMapAlgo(generateKmapGrid(KmapArray, columns)).sort();
+
+  console.log("indices : ", indices);
   let output = "";
   for (let i = 0; i < indices.length; i++) {
     output += `\n group ${i + 1} at `;
@@ -46,11 +48,11 @@ export default function Kmap({ variables, KmapArray }) {
       output += `(${indices[i][j]}) `;
     }
   }
-  console.log("indices: ");
-  console.log(indices);
-  let verticallyAdjPoints = mappablePoints(indices, "y", columns - 1);
-  console.log("vertical points : ");
-  console.log(verticallyAdjPoints);
+  // console.log("indices: ");
+  // console.log(indices);
+  //let verticallyAdjPoints = mappablePoints(indices, "y", columns - 1);
+  // console.log("vertical points : ");
+  // console.log(verticallyAdjPoints);
   function printHeadingColumns(n) {
     let data = grayColum;
     let html = [];
@@ -122,6 +124,7 @@ export default function Kmap({ variables, KmapArray }) {
           <span id="arrayOutput2"></span>
         </p>
       </div>
+
       <div className="container output" style={groupStyle2}>
         {/* {Object.keys(verticallyAdjPoints).map((key) => (
           <span key={key}>

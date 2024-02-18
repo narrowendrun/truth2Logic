@@ -99,7 +99,7 @@ export function kMapAlgo(grid) {
     for (let j = 0; j < grid[i].length; j++) {
       if (grid[i][j] == 1 && !indexSet.has([i, j])) {
         bfs(grid, i, j);
-        console.log(indexSet);
+        // console.log(indexSet);
         indexArray.push([...indexSet]); // Deep copy to avoid mutation
         indexSet.clear(); // Clear set after processing island
       }
@@ -119,160 +119,121 @@ export function changeCellValue(m, i, KmapGrid) {
 function isOfValidLength(n) {
   return n > 0 && (n & (n - 1)) === 0;
 }
-function makeAdjacentGroup(group, boundary) {
-  let interim = [group[0]];
-  let output = [];
-  for (let i = 1; i < group.length + 1; i++) {
-    if (group[i] - group[i - 1] == 1) {
-      interim.push(group[i]);
-    } else {
-      output.push(interim);
-      interim = [group[i]];
-    }
-  }
-  let mergeIndex1 = 0;
-  let mergeIndex2 = 0;
-  for (const coord in output) {
-    if (output[coord].includes(0)) {
-      mergeIndex1 = coord;
-    }
-    if (output[coord].includes(boundary)) {
-      mergeIndex2 = coord;
-    }
-  }
-  if (mergeIndex1 != mergeIndex2) {
-    // console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-    // console.log(`indexes to be merged ${mergeIndex1}, ${mergeIndex2}`)
-    // console.log(output)
-    // console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-    let mergedCoords = [];
-    let merge1 = output[mergeIndex1];
-    output.splice(mergeIndex1, 1);
-    let merge2 = [];
-    if (mergeIndex2 > mergeIndex1) {
-      merge2 = output[mergeIndex2 - 1];
-      output.splice(mergeIndex2 - 1, 1);
-    } else {
-      merge2 = output[mergeIndex2];
-      output.splice(mergeIndex2, 1);
-    }
-    mergedCoords = merge1.concat(merge2);
-    mergedCoords.sort();
-    output.push(mergedCoords);
-  }
-  output.sort();
-  return output;
-}
-function extractAdjacent(group, boundary) {
-  let adjacentGroups = {};
-  for (const coord in group) {
-    let corresponding_coord = group[coord];
-    corresponding_coord.sort();
-    if (
-      corresponding_coord.length - 1 ==
-      corresponding_coord[corresponding_coord.length - 1] -
-        corresponding_coord[0]
-    ) {
-      adjacentGroups[coord] = [];
-      adjacentGroups[coord].push(corresponding_coord);
-    } else {
-      let splitGroups = makeAdjacentGroup(corresponding_coord, boundary);
-      if (splitGroups) {
-        adjacentGroups[coord] = splitGroups;
-      }
-    }
-  }
-  return adjacentGroups;
-}
-function groupByCoordinates(Allcoords, uniqueCoords, choice) {
-  const groupedCoords = {};
-  for (const coord of uniqueCoords) {
-    groupedCoords[coord] = [];
-  }
-  for (const [xCoord, yCoord] of Allcoords) {
-    if (choice == "y") {
-      groupedCoords[yCoord].push(xCoord);
-    }
-    if (choice == "x") {
-      groupedCoords[xCoord].push(yCoord);
-    }
-  }
-  return groupedCoords;
-}
+// function makeAdjacentGroup(group, boundary) {
+//   let interim = [group[0]];
+//   let output = [];
+//   for (let i = 1; i < group.length + 1; i++) {
+//     if (group[i] - group[i - 1] == 1) {
+//       interim.push(group[i]);
+//     } else {
+//       output.push(interim);
+//       interim = [group[i]];
+//     }
+//   }
+//   let mergeIndex1 = 0;
+//   let mergeIndex2 = 0;
+//   for (const coord in output) {
+//     if (output[coord].includes(0)) {
+//       mergeIndex1 = coord;
+//     }
+//     if (output[coord].includes(boundary)) {
+//       mergeIndex2 = coord;
+//     }
+//   }
+//   if (mergeIndex1 != mergeIndex2) {
+//     // console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+//     // console.log(`indexes to be merged ${mergeIndex1}, ${mergeIndex2}`)
+//     // console.log(output)
+//     // console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+//     let mergedCoords = [];
+//     let merge1 = output[mergeIndex1];
+//     output.splice(mergeIndex1, 1);
+//     let merge2 = [];
+//     if (mergeIndex2 > mergeIndex1) {
+//       merge2 = output[mergeIndex2 - 1];
+//       output.splice(mergeIndex2 - 1, 1);
+//     } else {
+//       merge2 = output[mergeIndex2];
+//       output.splice(mergeIndex2, 1);
+//     }
+//     mergedCoords = merge1.concat(merge2);
+//     mergedCoords.sort();
+//     output.push(mergedCoords);
+//   }
+//   output.sort();
+//   return output;
+// }
+// function extractAdjacent(group, boundary) {
+//   let adjacentGroups = {};
+//   for (const coord in group) {
+//     let corresponding_coord = group[coord];
+//     corresponding_coord.sort();
+//     if (
+//       corresponding_coord.length - 1 ==
+//       corresponding_coord[corresponding_coord.length - 1] -
+//         corresponding_coord[0]
+//     ) {
+//       adjacentGroups[coord] = [];
+//       adjacentGroups[coord].push(corresponding_coord);
+//     } else {
+//       let splitGroups = makeAdjacentGroup(corresponding_coord, boundary);
+//       if (splitGroups) {
+//         adjacentGroups[coord] = splitGroups;
+//       }
+//     }
+//   }
+//   return adjacentGroups;
+// }
+// function groupByCoordinates(Allcoords, uniqueCoords, choice) {
+//   const groupedCoords = {};
+//   for (const coord of uniqueCoords) {
+//     groupedCoords[coord] = [];
+//   }
+//   for (const [xCoord, yCoord] of Allcoords) {
+//     if (choice == "y") {
+//       groupedCoords[yCoord].push(xCoord);
+//     }
+//     if (choice == "x") {
+//       groupedCoords[xCoord].push(yCoord);
+//     }
+//   }
+//   return groupedCoords;
+// }
 
-export function mappablePoints(group, choice, boundary) {
-  let coordinatesSet = new Set(); //set of cordinates of choice
-  let output = {};
-  //console.log(`........................................................`);
-  for (let i = 0; i < group.length; i++) {
-    coordinatesSet.clear();
-    for (let j = 0; j < group[i].length; j++) {
-      coordinatesSet.add(group[i][j][1]);
-    }
+// export function mappablePoints(group, choice, boundary) {
+//   let coordinatesSet = new Set(); //set of cordinates of choice
+//   let output = {};
+//   //console.log(`........................................................`);
+//   for (let i = 0; i < group.length; i++) {
+//     coordinatesSet.clear();
+//     for (let j = 0; j < group[i].length; j++) {
+//       coordinatesSet.add(group[i][j][1]);
+//     }
 
-    // console.log(`for group ${i + 1}: `);
-    // console.log(group[i]);
-    // console.log(`unique ${choice}-coordinate set is : `);
-    // console.log(coordinatesSet);
-    // console.log();
+//     // console.log(`for group ${i + 1}: `);
+//     // console.log(group[i]);
+//     // console.log(`unique ${choice}-coordinate set is : `);
+//     // console.log(coordinatesSet);
+//     // console.log();
 
-    let groupedCoords = groupByCoordinates(group[i], coordinatesSet, choice);
-    // console.log(`groupedCoords : `)
-    // console.log(groupedCoords)
-    let extractedCoords = extractAdjacent(groupedCoords, boundary);
-    // console.log(`adjacency computed :`);
-    // console.log(extractedCoords);
-    // for (const key in Object.keys(extractedCoords)) {
-    //   if (Object.keys(output).includes(key)) {
-    //     console.log(`key clash at ${key}`);
-    //     console.log("output value");
-    //     console.log(output[key]);
-    //     console.log("extractedcoord value");
-    //     console.log(extractedCoords[key]);
-    //   }
-    // }
-    output = { ...output, ...extractedCoords };
-    coordinatesSet.clear();
-  }
-  //console.log(`........................................................`);
-  return output;
-}
-
-let indices = [
-  [
-    [0, 2],
-    [1, 2],
-    [2, 2],
-    [3, 2],
-    [4, 2],
-    [5, 2],
-    [6, 2],
-    [7, 2],
-    [6, 1],
-    [5, 1],
-    [5, 0],
-    [6, 0],
-    [2, 1],
-    [1, 1],
-    [1, 0],
-    [2, 0],
-  ],
-  [
-    [0, 4],
-    [1, 4],
-    [2, 4],
-    [3, 4],
-    [4, 4],
-    [5, 4],
-    [6, 4],
-    [7, 4],
-  ],
-  [
-    [0, 7],
-    [7, 7],
-  ],
-  [
-    [3, 7],
-    [4, 7],
-  ],
-];
+//     let groupedCoords = groupByCoordinates(group[i], coordinatesSet, choice);
+//     console.log(`groupedCoords : `);
+//     console.log(groupedCoords);
+//     let extractedCoords = extractAdjacent(groupedCoords, boundary);
+//     console.log(`adjacency computed :`);
+//     console.log(extractedCoords);
+//     for (const key in Object.keys(extractedCoords)) {
+//       if (Object.keys(output).includes(key)) {
+//         console.log(`key clash at ${key}`);
+//         console.log("output value");
+//         console.log(output[key]);
+//         console.log("extractedcoord value");
+//         console.log(extractedCoords[key]);
+//       }
+//     }
+//     output = { ...output, ...extractedCoords };
+//     coordinatesSet.clear();
+//   }
+//   console.log(`........................................................`);
+//   return output;
+// }
